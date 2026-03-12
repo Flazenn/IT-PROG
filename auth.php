@@ -1,0 +1,19 @@
+<?php
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if user is logged in
+if(!isset($_SESSION['user_id'])) {
+    header("Location: ../qwerty.php");
+    exit();
+}
+
+// Check role-based access if specified
+if(isset($allowed_roles) && !in_array($_SESSION['role'], $allowed_roles)) {
+    // Redirect to their own dashboard if they try to access wrong section
+    header("Location: ../" . $_SESSION['role'] . "/");
+    exit();
+}
+?>
