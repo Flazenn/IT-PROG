@@ -1,6 +1,6 @@
 <?php
 require "dbconnection.php";
-mysqli_select_db($con, "aps");
+mysqli_select_db($con, "APSDB");
 
 
 if(isset($_GET['id'])){
