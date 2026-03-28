@@ -1,13 +1,13 @@
  <?php
         require "dbconnection.php";
-        mysqli_select_db($con, "aps");
+        mysqli_select_db($con, "apsdb");
 
 if (isset($_POST['add'])) {
 
     $username = $_POST['username'];
     $password = $_POST['password'];
     $role = $_POST['role'];
-    $status = $_POST['status'];
+    $status = 1;
     $datecreated = date("Y-m-d");
 
     $sql = "INSERT INTO users (password, datecreated, status, role, username)
@@ -38,13 +38,14 @@ if (isset($_POST['add'])) {
     <input type="password" name="password" required><br><br>
 
     Role:<br>
-    <input type="text" name="role" required><br><br>
+    <select name="role">
+    <option value="Employee" >Employee</option>
+    <option value="HR" >HR</option>
+    <option value="Finance" >Finance</option>
+    <option value="Admin" >Admin</option>
+</select>
+<br><br>
 
-    Status:<br>
-    <select name="status">
-    <option value="1">Active</option>
-    <option value="0">Inactive</option>
-</select><br><br>
 
 
     <input type="submit" name="add" value="Add User">
