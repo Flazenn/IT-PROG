@@ -11,6 +11,26 @@ date_default_timezone_set('Asia/Manila');
      exit();
 
  }
+    $user_id = $_SESSION['user_id'];
+    $result = mysqli_query($con, "SELECT * FROM employee_data WHERE user_id='$user_id'");
+    $row = mysqli_fetch_assoc($result);
+
+    $employee_id = $row['employee_id'];
+    $today = date('Y-m-d');
+
+    $check = mysqli_query($con, "SELECT * FROM attendance 
+                                WHERE employee_id='$employee_id' 
+                                AND DATE(time_in) = '$today'");
+
+    $attendance= mysqli_fetch_assoc($check);
+
+    if (!$attendance){
+        $status = 'not_clocked_in';
+    } else if ($attendance['time_out'] == NULL){
+        $status = 'clocked_in';
+    } else {
+        $status = 'clocked_out';
+    }
  ?>
 
 <!DOCTYPE html>
@@ -64,7 +84,17 @@ date_default_timezone_set('Asia/Manila');
                 <h3>Today's Status</h3>
                 <p>Date: <?php echo date('F j, Y'); ?></p>
                 <p>Time: <?php echo date('h:i A'); ?></p>
-                <p>Status: <span style="color: green; font-weight: bold;">Not Clocked In</span></p>
+
+                <?php
+                    if ($status == 'not_clocked_in'){
+                        echo "Status: <span style='color: gray; font-weight: bold;'>Not Clocked In</span></p>";
+                    }else if ($status == 'clocked_out'){
+                        echo "Status: <span style='color: red; font-weight: bold;'>Clocked Out</span></p>"; 
+                    }else {
+                        echo "Status: <span style='color: green; font-weight: bold;'>Clocked In</span></p>";
+                    }
+                ?>
+
             </div>
             
             </div>
