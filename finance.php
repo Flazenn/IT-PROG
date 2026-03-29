@@ -27,7 +27,7 @@
             <a href="approve_salary.php">Approve Salaries</a>
             <a href="ticket_request.php">Request Ticket</a>
             <a href="send_payslip.php">Send Payslips</a>
-            <a href="../logout.php">Logout</a>
+            <a href="logout.php">Logout</a>
         </div>
         <div class="content">
             <div class="card">
