@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+ require 'dbconnection.php';
+
+ if (!isset($_SESSION['user_id'])) {
+
+     header("Location: login.php");
+
+     exit();
+
+ }
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +36,7 @@
 <body>
     <div class="header">
         <h2>APS - Automated Payroll System</h2>
-        <div>Welcome, <?php echo $_SESSION['name']; ?> (HR)</div>
+        <div>Welcome, <?php echo $_SESSION['username']; ?> (HR)</div>
     </div>
     
     <div class="container">
