@@ -39,7 +39,7 @@ session_start();
     <div class="header">
         <h2>APS - Automated Payroll System</h2>
         <div class="user-info">
-            Welcome, <?php echo $_SESSION['name']; ?> (<?php echo ucfirst($_SESSION['role']); ?>)
+            Welcome, <?php echo $_SESSION['username']; ?> (<?php echo ucfirst($_SESSION['role']); ?>)
         </div>
     </div>
     
