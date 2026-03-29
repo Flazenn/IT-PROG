@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+ require 'dbconnection.php';
+
+ if (!isset($_SESSION['user_id'])) {
+
+     header("Location: login.php");
+
+     exit();
+
+ }
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +32,7 @@
 <body>
     <div class="header">
         <h2>APS - Admin Panel</h2>
-        <p>Welcome, <?php echo $_SESSION['name']; ?></p>
+        <p>Welcome, <?php echo $_SESSION['username']; ?></p>
     </div>
     <div class="container">
         <div class="sidebar">
@@ -27,7 +41,7 @@
             <a href="adduser.php">Add User</a>
             <a href="removeuser.php">Remove User</a>
             <a href="edituserdata.php">Edit User Data</a>
-            <a href="../logout.php">Logout</a>
+            <a href="logout.php">Logout</a>
         </div>
         <div class="content">
             <div class="card">
