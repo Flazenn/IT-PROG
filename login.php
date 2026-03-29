@@ -1,59 +1,36 @@
 <?php
 session_start();
-
-// Hardcoded users (no database needed)
-$users = [
-    'john_employee' => [
-        'password' => 'pass123',
-        'role' => 'employee',
-        'name' => 'John Doe',
-        'email' => 'john@email.com'
-    ],
-    'jane_hr' => [
-        'password' => 'pass123',
-        'role' => 'hr',
-        'name' => 'Jane Smith',
-        'email' => 'jane@email.com'
-    ],
-    'mike_finance' => [
-        'password' => 'pass123',
-        'role' => 'finance',
-        'name' => 'Mike Wilson',
-        'email' => 'mike@email.com'
-    ],
-    'admin' => [
-        'password' => 'admin123',
-        'role' => 'admin',
-        'name' => 'Admin User',
-        'email' => 'admin@email.com'
-    ]
-];
+require 'dbconnection.php';
 
 // Redirect if already logged in
 if(isset($_SESSION['user_id'])) {
-    header("Location: " . $_SESSION['role'] . "/");
+    header("Location: " . $_SESSION['role'] . ".php");
     exit();
 }
 
 $error = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    
-    if(isset($users[$username]) && $users[$username]['password'] == $password) {
-        $_SESSION['user_id'] = $username;
-        $_SESSION['username'] = $username;
-        $_SESSION['role'] = $users[$username]['role'];
-        $_SESSION['name'] = $users[$username]['name'];
-        $_SESSION['email'] = $users[$username]['email'];
-        
-        // Redirect to role-based dashboard
-        header("Location: " . $users[$username]['role'] . "/");
-        exit();
-    } else {
-        $error = "Invalid username or password";
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        $result = mysqli_query($con,
+            "SELECT * FROM users WHERE username = '$username'");
+
+        if ($row = mysqli_fetch_assoc($result)){
+            if($row['password'] == $password) {
+                $_SESSION['user_id'] = $row['user_id'];
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['role'] = $row['role'];
+                
+                // Redirect to role-based dashboard
+                header("Location: " . $_SESSION['role'] . ".php");
+                exit();
+            } else {
+                $error = "Invalid username or password";
+            }
+        }
     }
-}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -75,13 +52,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST">
             <input type="text" name="username" placeholder="Username" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
-            <button type="submit">Login</button>
+            <button type="submit" name="action" value="login">Login</button>
         </form>
         <div class="user-list">
-            <strong>Test Accounts:</strong><br>
-            employee: john_employee / pass123<br>
-            HR: jane_hr / pass123<br>
-            Finance: mike_finance / pass123<br>
+            <strong>Accounts For Testing(remove later):</strong><br>
+            employee: john / qwerty1234!<br>
+            HR: jane / pass123<br>
+            Finance: mike / pass123<br>
             Admin: admin / admin123
         </div>
     </div>
