@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+ require 'dbconnection.php';
+
+ if (!isset($_SESSION['user_id'])) {
+
+     header("Location: login.php");
+
+     exit();
+
+ }
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +32,7 @@
 <body>
     <div class="header">
         <h2>APS - Finance Department</h2>
-        <p>Welcome, <?php echo $_SESSION['name']; ?></p>
+        <p>Welcome, <?php echo $_SESSION['username']; ?></p>
     </div>
     <div class="container">
         <div class="sidebar">
