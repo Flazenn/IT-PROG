@@ -47,7 +47,7 @@ session_start();
             <a href="time_adjustment.php">Time Adjustments</a>
             <a href="ticket_request.php">Request Ticket</a>
             <a href="send_finance.php">Send to Finance</a>
-            <a href="../logout.php" style="border-top: 1px solid #46637f; margin-top: 20px;">Logout</a>
+            <a href="logout.php" style="border-top: 1px solid #46637f; margin-top: 20px;">Logout</a>
         </div>
         
         <div class="content">
