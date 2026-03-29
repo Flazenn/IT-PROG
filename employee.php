@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+ require 'dbconnection.php';
+
+ if (!isset($_SESSION['user_id'])) {
+
+     header("Location: login.php");
+
+     exit();
+
+ }
+ ?>
+
 <!DOCTYPE html>
 <html>
 <head>
