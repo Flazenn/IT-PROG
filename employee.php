@@ -36,7 +36,7 @@
             <a href="timesheet.php">My Timesheet</a>
             <a href="timein.php">Time In</a>
             <a href="timeout.php">Time Out</a>
-            <a href="../logout.php" style="border-top: 1px solid #46637f; margin-top: 20px;">Logout</a>
+            <a href="logout.php" style="border-top: 1px solid #46637f; margin-top: 20px;">Logout</a>
         </div>
         
         <div class="content">
