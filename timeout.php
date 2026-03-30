@@ -52,8 +52,9 @@
     if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $employee_id = $_POST['employee_id'];
         $today = date('Y-m-d');
+        $today = "2026-04-3";
         $time_out = date('Y-m-d H:i:s');
-        // $test_time_out = "2026-03-29 17:00:00"; (CHANGE INTO THE DATE/TIME YOU WANT)
+        // $time_out = "2026-04-3 17:00:00"; 
     
         $fetch = mysqli_query($con, "SELECT time_in FROM attendance 
                                     WHERE employee_id='$employee_id' 
