@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 30, 2026 at 02:58 PM
+-- Generation Time: Mar 30, 2026 at 03:29 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -102,6 +102,25 @@ CREATE TABLE `employee_deductions` (
 
 INSERT INTO `employee_deductions` (`deduction_id`, `employee_id`, `SSS`, `PhilHealth`, `Pag-IBIG`) VALUES
 (3, 3, 500.00, 240.00, 100.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `finance`
+--
+
+CREATE TABLE `finance` (
+  `finance_id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `baserate` decimal(10,2) NOT NULL,
+  `total_hours` decimal(5,2) NOT NULL,
+  `SSS` decimal(10,2) NOT NULL,
+  `PhilHealth` decimal(10,2) NOT NULL,
+  `Pag-IBIG` decimal(10,2) NOT NULL,
+  `benefit_name` varchar(20) NOT NULL,
+  `amount` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -224,6 +243,12 @@ ALTER TABLE `employee_deductions`
   ADD KEY `employee_id` (`employee_id`);
 
 --
+-- Indexes for table `finance`
+--
+ALTER TABLE `finance`
+  ADD PRIMARY KEY (`finance_id`);
+
+--
 -- Indexes for table `government_contribution`
 --
 ALTER TABLE `government_contribution`
@@ -275,6 +300,12 @@ ALTER TABLE `employee_data`
 --
 ALTER TABLE `employee_deductions`
   MODIFY `deduction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `finance`
+--
+ALTER TABLE `finance`
+  MODIFY `finance_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `government_contribution`
