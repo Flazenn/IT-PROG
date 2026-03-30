@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 30, 2026 at 09:17 AM
+-- Generation Time: Mar 30, 2026 at 02:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -67,7 +67,7 @@ CREATE TABLE `employee_data` (
   `employee_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
-  `baserate` int(11) NOT NULL,
+  `baserate` decimal(10,2) NOT NULL,
   `mandatory_deduction` varchar(20) NOT NULL,
   `marital_status` enum('single','married','widowed') NOT NULL,
   `date_hired` date NOT NULL
@@ -78,8 +78,9 @@ CREATE TABLE `employee_data` (
 --
 
 INSERT INTO `employee_data` (`employee_id`, `user_id`, `name`, `baserate`, `mandatory_deduction`, `marital_status`, `date_hired`) VALUES
-(1, 1, 'john', 2, 'SSS', 'single', '2026-03-29'),
-(2, 2, 'steve', 3, 'PhilHealth', 'married', '2017-03-01');
+(1, 1, 'john', 2.00, 'SSS', 'single', '2026-03-29'),
+(2, 2, 'steve', 3.00, 'PhilHealth', 'married', '2017-03-01'),
+(3, 14, 'Mark', 60.00, 'SSS,Philhealth,Pag-I', 'married', '2026-03-30');
 
 -- --------------------------------------------------------
 
@@ -88,11 +89,19 @@ INSERT INTO `employee_data` (`employee_id`, `user_id`, `name`, `baserate`, `mand
 --
 
 CREATE TABLE `employee_deductions` (
-  `payroll_deduction_id` int(11) NOT NULL,
-  `payroll_id` int(3) NOT NULL,
-  `contribution_id` int(3) NOT NULL,
-  `amount` int(8) NOT NULL
+  `deduction_id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `SSS` decimal(10,2) NOT NULL,
+  `PhilHealth` decimal(10,2) NOT NULL,
+  `Pag-IBIG` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `employee_deductions`
+--
+
+INSERT INTO `employee_deductions` (`deduction_id`, `employee_id`, `SSS`, `PhilHealth`, `Pag-IBIG`) VALUES
+(3, 3, 500.00, 240.00, 100.00);
 
 -- --------------------------------------------------------
 
@@ -125,7 +134,9 @@ CREATE TABLE `payroll` (
   `approved_by` varchar(20) NOT NULL,
   `approved_at` datetime NOT NULL,
   `generated_at` datetime NOT NULL,
-  `sent_at` datetime NOT NULL
+  `sent_at` datetime NOT NULL,
+  `week_start` date NOT NULL,
+  `week_end` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -143,7 +154,8 @@ CREATE TABLE `tickets` (
   `status` tinyint(1) NOT NULL,
   `resolved_by` varchar(20) NOT NULL,
   `created_at` datetime NOT NULL,
-  `resolved_at` datetime NOT NULL
+  `resolved_at` datetime NOT NULL,
+  `sent_to` varchar(20) NOT NULL DEFAULT 'hr'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -172,7 +184,13 @@ INSERT INTO `users` (`user_id`, `password`, `datecreated`, `status`, `role`, `us
 (4, 'qwerty1234!', '2026-03-12', 1, 'employee', 'geane'),
 (6, 'pass123', '2026-03-29', 1, 'hr', 'jane'),
 (7, 'pass123', '2026-03-29', 1, 'finance', 'mike'),
-(8, 'admin123', '2026-03-29', 1, 'admin', 'admin');
+(8, 'admin123', '2026-03-29', 1, 'admin', 'admin'),
+(9, 'pass123', '2026-03-30', 1, 'Employee', 'lisa'),
+(10, 'pass123', '2026-03-30', 1, 'Admin', 'Brenda'),
+(11, 'pass123', '2026-03-30', 1, 'Employee', 'Marc'),
+(12, 'pass123', '2026-03-30', 1, 'Employee', 'Marc'),
+(13, 'pass123', '2026-03-30', 1, 'Employee', 'bert'),
+(14, 'pass123', '2026-03-30', 1, 'Employee', 'Mark');
 
 --
 -- Indexes for dumped tables
@@ -202,8 +220,8 @@ ALTER TABLE `employee_data`
 -- Indexes for table `employee_deductions`
 --
 ALTER TABLE `employee_deductions`
-  ADD PRIMARY KEY (`payroll_deduction_id`),
-  ADD KEY `payroll_id` (`payroll_id`);
+  ADD PRIMARY KEY (`deduction_id`),
+  ADD KEY `employee_id` (`employee_id`);
 
 --
 -- Indexes for table `government_contribution`
@@ -250,13 +268,13 @@ ALTER TABLE `benefits`
 -- AUTO_INCREMENT for table `employee_data`
 --
 ALTER TABLE `employee_data`
-  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `employee_deductions`
 --
 ALTER TABLE `employee_deductions`
-  MODIFY `payroll_deduction_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `deduction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `government_contribution`
@@ -280,7 +298,17 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `employee_deductions`
+--
+ALTER TABLE `employee_deductions`
+  ADD CONSTRAINT `employee_deductions_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee_data` (`employee_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
