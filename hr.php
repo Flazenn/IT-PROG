@@ -42,8 +42,7 @@ session_start();
     <div class="container">
         <div class="sidebar">
             <a href="index.php" class="active">Dashboard</a>
-            <a href="employees.php">Employees</a>
-            <a href="salary_data.php">Salary Data</a>
+            <a href="employees_salary_data.php">Employee Salary Data</a>
             <a href="time_adjustment.php">Time Adjustments</a>
             <a href="ticket_request.php">Request Ticket</a>
             <a href="send_finance.php">Send to Finance</a>
