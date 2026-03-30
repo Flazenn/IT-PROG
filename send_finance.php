@@ -52,7 +52,7 @@ if (isset($_GET['send_all'])) {
     mysqli_query($con, $sql);
 }
 
-$result = $con->query("SELECT 
+$result = mysqli_query($con, "SELECT 
             e.employee_id,
             e.name,
             e.baserate,
