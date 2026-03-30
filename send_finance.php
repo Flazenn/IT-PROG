@@ -1,6 +1,5 @@
 <?php
 require "dbconnection.php";
-mysqli_select_db($con, "apsdb");
 
 session_start();
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'hr') {
@@ -8,10 +7,22 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'hr') {
 }
 
 if (isset($_GET['send_id'])) {
+    $employee_id = $_GET['send_id'];
+    
+    $check = mysqli_query($con, "SELECT * FROM finance 
+                                  WHERE employee_id = '$employee_id' 
+                                  AND status != 'rejected'");
 
-    $id = $_GET['send_id'];
+    if (mysqli_num_rows($check) > 0) {
+        echo "<script>
+                alert('This employee already has a pending or approved record!');
+                window.location.href = 'send_finance.php';
+              </script>";
+        exit();
+    }
+    $id = $employee_id;
 
-    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount)
+    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount, date_sent)
             SELECT 
                 e.employee_id,
                 e.name,
@@ -21,11 +32,12 @@ if (isset($_GET['send_id'])) {
                 IFNULL(d.PhilHealth, 0),
                 IFNULL(d.`Pag-IBIG`, 0),
                 IFNULL(b.benefit_name, 'N/A'),
-                IFNULL(SUM(b.amount), 0)
+                IFNULL(SUM(b.amount), 0),
+                NOW()
             FROM employee_data e
             LEFT JOIN attendance a ON e.employee_id = a.employee_id
             LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id
-            LEFT JOIN benefits b ON e.employee_id = b.payroll_id
+            LEFT JOIN benefits b ON e.employee_id = b.employee_id
             WHERE e.employee_id = '$id'
             GROUP BY e.employee_id, e.name, e.baserate, d.SSS, d.PhilHealth, d.`Pag-IBIG`, b.benefit_name";
 
@@ -33,8 +45,18 @@ if (isset($_GET['send_id'])) {
 }
 
 if (isset($_GET['send_all'])) {
+    $check = mysqli_query($con, "SELECT * FROM finance 
+                                 WHERE status != 'rejected'");
 
-    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount)
+    if (mysqli_num_rows($check) > 0) {
+        echo "<script>
+                alert('Some employees already have pending or approved records!');
+                window.location.href = 'send_finance.php';
+              </script>";
+        exit();
+    }
+
+    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount, date_sent)
             SELECT 
                 e.employee_id,
                 e.name,
@@ -44,11 +66,12 @@ if (isset($_GET['send_all'])) {
                 IFNULL(d.PhilHealth, 0),
                 IFNULL(d.`Pag-IBIG`, 0),
                 IFNULL(b.benefit_name, 'N/A'),
-                IFNULL(SUM(b.amount), 0)
+                IFNULL(SUM(b.amount), 0),
+                NOW()
             FROM employee_data e
             LEFT JOIN attendance a ON e.employee_id = a.employee_id
             LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id
-            LEFT JOIN benefits b ON e.employee_id = b.payroll_id
+            LEFT JOIN benefits b ON e.employee_id = b.employee_id
             GROUP BY e.employee_id, e.name, e.baserate, d.SSS, d.PhilHealth, d.`Pag-IBIG`, b.benefit_name";
 
     mysqli_query($con, $sql);
@@ -65,7 +88,7 @@ $result = mysqli_query($con, "SELECT
         FROM employee_data e
         LEFT JOIN attendance a ON e.employee_id = a.employee_id
         LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id
-        LEFT JOIN benefits b ON e.employee_id = b.payroll_id
+        LEFT JOIN benefits b ON e.employee_id = b.employee_id
         GROUP BY e.employee_id, e.name, e.baserate, e.mandatory_deduction, d.SSS, d.PhilHealth, d.`Pag-IBIG`");
 ?>
 
