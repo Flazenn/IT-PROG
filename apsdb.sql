@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 30, 2026 at 03:29 PM
+-- Generation Time: Mar 30, 2026 at 04:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -119,8 +119,37 @@ CREATE TABLE `finance` (
   `PhilHealth` decimal(10,2) NOT NULL,
   `Pag-IBIG` decimal(10,2) NOT NULL,
   `benefit_name` varchar(20) NOT NULL,
-  `amount` decimal(10,2) NOT NULL
+  `amount` decimal(10,2) NOT NULL,
+  `date_sent` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `finance`
+--
+
+INSERT INTO `finance` (`finance_id`, `employee_id`, `name`, `baserate`, `total_hours`, `SSS`, `PhilHealth`, `Pag-IBIG`, `benefit_name`, `amount`, `date_sent`) VALUES
+(1, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(2, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(3, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(4, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(5, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(6, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(7, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(8, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(9, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(10, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(11, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(12, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(13, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(14, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(15, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(16, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(17, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(18, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(19, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
+(20, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(21, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
+(22, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, '2026-03-30 22:10:17');
 
 -- --------------------------------------------------------
 
@@ -305,7 +334,7 @@ ALTER TABLE `employee_deductions`
 -- AUTO_INCREMENT for table `finance`
 --
 ALTER TABLE `finance`
-  MODIFY `finance_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `finance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `government_contribution`
