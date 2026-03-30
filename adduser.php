@@ -1,6 +1,5 @@
  <?php
 require "dbconnection.php";
-mysqli_select_db($con, "apsdb");
 
 if (isset($_POST['add'])) {
 
