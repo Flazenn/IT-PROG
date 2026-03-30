@@ -17,14 +17,18 @@ $sql = "SELECT
             e.name,
             e.baserate,
             e.mandatory_deduction AS mandatory_status,
-            p.total_hours,
-            p.overtime_hours,
-            p.total_deductions,
-            p.total_benefits
+            COALESCE(SUM(a.total_hours), 0) AS total_hours,
+            COALESCE((ed.SSS + ed.PhilHealth + ed.`Pag-IBIG`), 0) AS total_deductions,
+            COALESCE(SUM(b.amount), 0) AS total_benefits
         FROM employee_data e
-        LEFT JOIN payroll p 
-            ON e.employee_id = p.employee_id
-        WHERE e.name LIKE '%$search%'";
+        LEFT JOIN attendance a 
+            ON e.employee_id = a.employee_id
+        LEFT JOIN employee_deductions ed 
+            ON e.employee_id = ed.employee_id
+        LEFT JOIN benefits b 
+            ON e.employee_id = b.payroll_id
+        WHERE e.name LIKE '%$search%'
+        GROUP BY e.employee_id, e.name, e.baserate, e.mandatory_deduction, ed.SSS, ed.PhilHealth, ed.`Pag-IBIG`";
 
 $result = mysqli_query($con, $sql);
 ?>
@@ -47,26 +51,23 @@ $result = mysqli_query($con, $sql);
 
 <table border="1" cellpadding="10">
 <tr>
-<th>Employee ID</th>
-<th>Name</th>
-<th>Base Rate</th>
-<th>Mandatory Status</th>
-<th>Total Hours</th>
-<th>Overtime Hours</th>
-<th>Total Deductions</th>
-<th>Total Benefits</th>
+    <th>Employee ID</th>
+    <th>Name</th>
+    <th>Base Rate</th>
+    <th>Mandatory Status</th>
+    <th>Total Hours</th>
+    <th>Total Deductions</th>
+    <th>Total Benefits</th>
 </tr>
 
 <?php
 while($row = $result->fetch_assoc()) {
-
     echo "<tr>";
     echo "<td>".$row['employee_id']."</td>";
     echo "<td>".$row['name']."</td>";
     echo "<td>".$row['baserate']."</td>";
     echo "<td>".$row['mandatory_status']."</td>";
     echo "<td>".$row['total_hours']."</td>";
-    echo "<td>".$row['overtime_hours']."</td>";
     echo "<td>".$row['total_deductions']."</td>";
     echo "<td>".$row['total_benefits']."</td>";
     echo "</tr>";
@@ -76,7 +77,7 @@ while($row = $result->fetch_assoc()) {
 </table>
 
 <br>
-<a href="hr.php"> Back to HR page</a>
+<a href="hr.php">Back to HR page</a>
 
 </body>
 </html>
