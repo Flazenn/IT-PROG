@@ -53,6 +53,7 @@
         $employee_id = $_POST['employee_id'];
         $encoded_by = $_POST['encoded_by'];
         $time_in = date('Y-m-d H:i:s');
+        // $time_in = "2026-04-3 9:00:00";
 
         $query = "INSERT INTO attendance (employee_id, encoded_by, time_in)
                   VALUES ('$employee_id', '$encoded_by', '$time_in')";
