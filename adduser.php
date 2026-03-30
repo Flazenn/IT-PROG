@@ -8,6 +8,7 @@ if (isset($_POST['add'])) {
     $password = $_POST['password'];
     $role = $_POST['role'];
     $baserate = $_POST['baserate'];
+    $marital = $_POST['marital'];
 
     $status = 1;
     $datecreated = date("Y-m-d");
@@ -16,18 +17,32 @@ if (isset($_POST['add'])) {
     $sql1 = "INSERT INTO users (password, datecreated, status, role, username)
              VALUES ('$password', '$datecreated', '$status', '$role', '$username')";
 
-    $temp = $con->query($sql1);
-    if ($temp == TRUE && $role == "Employee") {
-
+    if ($con->query($sql1) === TRUE && $role == "Employee") {
         
         $user_id = $con->insert_id;
 
-        
         $sql2 = "INSERT INTO employee_data (user_id, name, baserate, mandatory_deduction, marital_status, date_hired)
-                 VALUES ('$user_id', '$username', '$baserate', '0', 'single', CURDATE())";
+                 VALUES ('$user_id', '$username', '$baserate', 'SSS,Philhealth,Pag-IBIG', '$marital', CURDATE())";
 
         if ($con->query($sql2) === TRUE) {
-            echo "User added successfully";
+
+            $new_employee_id = $con->insert_id;
+
+            $sss = 500.00;
+            $pagibig = 100.00;
+            $monthly_salary = $baserate * 40 * 4;
+            $philhealth = ($monthly_salary * 0.05) / 2;
+
+            $sql3 = "INSERT INTO employee_deductions 
+                     (employee_id, SSS, PhilHealth, `Pag-IBIG`)
+                     VALUES ('$new_employee_id', '$sss', '$philhealth', '$pagibig')";
+
+            if ($con->query($sql3) === TRUE) {
+                echo "User and employee added successfully";
+            } else {
+                echo "Deductions error: " . $con->error;
+            }
+
         } else {
             echo "Employee insert error: " . $con->error;
         }
@@ -62,7 +77,12 @@ if (isset($_POST['add'])) {
 <br><br>
 Baserate:<br>
     <input type="number" name="baserate" required><br><br>
-
+    Marital Status:<br>
+    <select name="marital">
+    <option value="single" >Single</option>
+    <option value="married" >Married</option>
+</select>
+<br><br>
 
 
     <input type="submit" name="add" value="Add User">
