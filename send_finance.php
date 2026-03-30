@@ -11,43 +11,45 @@ if (isset($_GET['send_id'])) {
 
     $id = $_GET['send_id'];
 
-    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount, date_sent)
+    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount)
             SELECT 
                 e.employee_id,
                 e.name,
                 e.baserate,
-                p.total_hours,
-                d.SSS,
-                d.PhilHealth,
-                d.`Pag-IBIG`,
-                'Standard Benefit',
-                p.total_benefits,
-                NOW() 
+                IFNULL(SUM(a.total_hours), 0),
+                IFNULL(d.SSS, 0),
+                IFNULL(d.PhilHealth, 0),
+                IFNULL(d.`Pag-IBIG`, 0),
+                IFNULL(b.benefit_name, 'N/A'),
+                IFNULL(SUM(b.amount), 0)
             FROM employee_data e
-            LEFT JOIN payroll p ON e.employee_id = p.employee_id
+            LEFT JOIN attendance a ON e.employee_id = a.employee_id
             LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id
-            WHERE e.employee_id = '$id'";
+            LEFT JOIN benefits b ON e.employee_id = b.payroll_id
+            WHERE e.employee_id = '$id'
+            GROUP BY e.employee_id, e.name, e.baserate, d.SSS, d.PhilHealth, d.`Pag-IBIG`, b.benefit_name";
 
     mysqli_query($con, $sql);
 }
 
 if (isset($_GET['send_all'])) {
 
-    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount, date_sent)
+    $sql = "INSERT INTO finance (employee_id, name, baserate, total_hours, SSS, PhilHealth, `Pag-IBIG`, benefit_name, amount)
             SELECT 
                 e.employee_id,
                 e.name,
                 e.baserate,
-                p.total_hours,
-                d.SSS,
-                d.PhilHealth,
-                d.`Pag-IBIG`,
-                'Standard Benefit',
-                p.total_benefits,
-                NOW()
+                IFNULL(SUM(a.total_hours), 0),
+                IFNULL(d.SSS, 0),
+                IFNULL(d.PhilHealth, 0),
+                IFNULL(d.`Pag-IBIG`, 0),
+                IFNULL(b.benefit_name, 'N/A'),
+                IFNULL(SUM(b.amount), 0)
             FROM employee_data e
-            LEFT JOIN payroll p ON e.employee_id = p.employee_id
-            LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id";
+            LEFT JOIN attendance a ON e.employee_id = a.employee_id
+            LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id
+            LEFT JOIN benefits b ON e.employee_id = b.payroll_id
+            GROUP BY e.employee_id, e.name, e.baserate, d.SSS, d.PhilHealth, d.`Pag-IBIG`, b.benefit_name";
 
     mysqli_query($con, $sql);
 }
@@ -57,12 +59,14 @@ $result = mysqli_query($con, "SELECT
             e.name,
             e.baserate,
             e.mandatory_deduction,
-            p.total_hours,
-            p.overtime_hours,
-            p.total_deductions,
-            p.total_benefits
+            IFNULL(SUM(a.total_hours), 0) AS total_hours,
+            IFNULL(d.SSS, 0) + IFNULL(d.PhilHealth, 0) + IFNULL(d.`Pag-IBIG`, 0) AS total_deductions,
+            IFNULL(SUM(b.amount), 0) AS total_benefits
         FROM employee_data e
-        LEFT JOIN payroll p ON e.employee_id = p.employee_id");
+        LEFT JOIN attendance a ON e.employee_id = a.employee_id
+        LEFT JOIN employee_deductions d ON e.employee_id = d.employee_id
+        LEFT JOIN benefits b ON e.employee_id = b.payroll_id
+        GROUP BY e.employee_id, e.name, e.baserate, e.mandatory_deduction, d.SSS, d.PhilHealth, d.`Pag-IBIG`");
 ?>
 
 <!DOCTYPE html>
@@ -76,15 +80,12 @@ $result = mysqli_query($con, "SELECT
 
 <?php
 if (isset($_GET['msg'])) {
-
     if ($_GET['msg'] == "sent_one") {
         echo "<p style='color:green;'>Employee salary successfully sent to Finance.</p>";
     }
-
     if ($_GET['msg'] == "sent_all") {
         echo "<p style='color:green;'>All employee salary data successfully sent to Finance.</p>";
     }
-
     if ($_GET['msg'] == "error") {
         echo "<p style='color:red;'>Error sending data.</p>";
     }
@@ -100,24 +101,22 @@ if (isset($_GET['msg'])) {
 
 <table border="1" cellpadding="10">
 <tr>
-<th>ID</th>
-<th>Name</th>
-<th>Base Rate</th>
-<th>Mandatory</th>
-<th>Total Hours</th>
-<th>OT Hours</th>
-<th>Deductions</th>
-<th>Benefits</th>
-<th>Action</th>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Base Rate</th>
+    <th>Mandatory</th>
+    <th>Total Hours</th>
+    <th>Deductions</th>
+    <th>Benefits</th>
+    <th>Action</th>
 </tr>
 
 <?php
 while($row = $result->fetch_assoc()) {
 
-    $total_hours = $row['total_hours'] ?? 0;
-    $overtime_hours = $row['overtime_hours'] ?? 0;
+    $total_hours      = $row['total_hours'] ?? 0;
     $total_deductions = $row['total_deductions'] ?? 0;
-    $total_benefits = $row['total_benefits'] ?? 0;
+    $total_benefits   = $row['total_benefits'] ?? 0;
 
     echo "<tr>";
     echo "<td>".$row['employee_id']."</td>";
@@ -125,7 +124,6 @@ while($row = $result->fetch_assoc()) {
     echo "<td>".$row['baserate']."</td>";
     echo "<td>".$row['mandatory_deduction']."</td>";
     echo "<td>".$total_hours."</td>";
-    echo "<td>".$overtime_hours."</td>";
     echo "<td>".$total_deductions."</td>";
     echo "<td>".$total_benefits."</td>";
 
