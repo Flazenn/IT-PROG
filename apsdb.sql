@@ -68,7 +68,7 @@ CREATE TABLE `employee_data` (
   `user_id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL,
   `baserate` int(11) NOT NULL,
-  `mandatoru_deduction` varchar(20) NOT NULL,
+  `mandatory_deduction` varchar(20) NOT NULL,
   `marital_status` enum('single','married','widowed') NOT NULL,
   `date_hired` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -77,7 +77,7 @@ CREATE TABLE `employee_data` (
 -- Dumping data for table `employee_data`
 --
 
-INSERT INTO `employee_data` (`employee_id`, `user_id`, `name`, `baserate`, `mandatoru_deduction`, `marital_status`, `date_hired`) VALUES
+INSERT INTO `employee_data` (`employee_id`, `user_id`, `name`, `baserate`, `mandatory_deduction`, `marital_status`, `date_hired`) VALUES
 (1, 1, 'john', 2, 'SSS', 'single', '2026-03-29'),
 (2, 2, 'steve', 3, 'PhilHealth', 'married', '2017-03-01');
 
