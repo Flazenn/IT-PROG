@@ -17,10 +17,10 @@ $sql = "SELECT
             e.name,
             e.baserate,
             e.mandatory_deduction AS mandatory_status,
-            COALESCE(p.total_hours, 0) AS total_hours,
-            COALESCE(p.overtime_hours, 0) AS overtime_hours,
-            COALESCE(p.total_deductions, 0) AS total_deductions,
-            COALESCE(p.total_benefits, 0) AS total_benefits
+            p.total_hours,
+            p.overtime_hours,
+            p.total_deductions,
+            p.total_benefits
         FROM employee_data e
         LEFT JOIN payroll p 
             ON e.employee_id = p.employee_id
