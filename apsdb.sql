@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 30, 2026 at 04:12 PM
+-- Generation Time: Mar 30, 2026 at 09:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,8 +41,13 @@ CREATE TABLE `attendance` (
 --
 
 INSERT INTO `attendance` (`log_id`, `employee_id`, `encoded_by`, `time_in`, `time_out`, `total_hours`) VALUES
-(9, 2, 'steve', '2026-03-29 09:00:00', '2026-03-29 17:00:00', 8.00),
-(12, 1, 'john', '2026-03-29 09:00:00', '2026-03-29 23:46:28', 14.77);
+(13, 3, 'Mark', '2026-03-30 09:00:00', '2026-03-30 17:00:00', 8.00),
+(17, 7, 'steve', '2026-03-31 09:00:00', '2026-03-31 18:00:00', 9.00),
+(18, 7, 'steve', '2026-03-30 09:00:00', '2026-03-30 17:00:00', 8.00),
+(19, 7, 'steve', '2026-04-01 09:00:00', '2026-04-01 17:00:00', 8.00),
+(20, 7, 'steve', '2026-04-02 09:00:00', '2026-04-02 17:00:00', 8.00),
+(21, 7, 'steve', '2026-04-03 09:00:00', '2026-04-03 17:00:00', 8.00),
+(27, 6, 'jane', '2026-03-31 03:34:38', '2026-03-31 03:35:15', 0.01);
 
 -- --------------------------------------------------------
 
@@ -52,10 +57,20 @@ INSERT INTO `attendance` (`log_id`, `employee_id`, `encoded_by`, `time_in`, `tim
 
 CREATE TABLE `benefits` (
   `benefit_id` int(11) NOT NULL,
-  `payroll_id` int(3) NOT NULL,
+  `employee_id` int(11) NOT NULL,
   `benefit_name` varchar(20) NOT NULL,
-  `amount` int(8) NOT NULL
+  `amount` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `benefits`
+--
+
+INSERT INTO `benefits` (`benefit_id`, `employee_id`, `benefit_name`, `amount`) VALUES
+(1, 4, 'Standard Benefit', 500.00),
+(2, 5, 'Standard Benefit', 0.00),
+(3, 6, 'Standard Benefit', 500.00),
+(4, 7, 'Standard Benefit', 0.00);
 
 -- --------------------------------------------------------
 
@@ -78,9 +93,9 @@ CREATE TABLE `employee_data` (
 --
 
 INSERT INTO `employee_data` (`employee_id`, `user_id`, `name`, `baserate`, `mandatory_deduction`, `marital_status`, `date_hired`) VALUES
-(1, 1, 'john', 2.00, 'SSS', 'single', '2026-03-29'),
-(2, 2, 'steve', 3.00, 'PhilHealth', 'married', '2017-03-01'),
-(3, 14, 'Mark', 60.00, 'SSS,Philhealth,Pag-I', 'married', '2026-03-30');
+(3, 14, 'Mark', 60.00, 'SSS,Philhealth,Pag-I', 'married', '2026-03-30'),
+(6, 17, 'john', 150.00, 'SSS,Philhealth,Pag-I', 'married', '2026-03-30'),
+(7, 18, 'steve', 200.00, 'SSS,Philhealth,Pag-I', 'single', '2026-03-30');
 
 -- --------------------------------------------------------
 
@@ -101,7 +116,9 @@ CREATE TABLE `employee_deductions` (
 --
 
 INSERT INTO `employee_deductions` (`deduction_id`, `employee_id`, `SSS`, `PhilHealth`, `Pag-IBIG`) VALUES
-(3, 3, 500.00, 240.00, 100.00);
+(3, 3, 500.00, 240.00, 100.00),
+(6, 6, 500.00, 600.00, 100.00),
+(7, 7, 500.00, 800.00, 100.00);
 
 -- --------------------------------------------------------
 
@@ -120,36 +137,20 @@ CREATE TABLE `finance` (
   `Pag-IBIG` decimal(10,2) NOT NULL,
   `benefit_name` varchar(20) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
-  `date_sent` datetime DEFAULT NULL
+  `date_sent` datetime DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `approved_by` varchar(20) NOT NULL,
+  `approved_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `finance`
 --
 
-INSERT INTO `finance` (`finance_id`, `employee_id`, `name`, `baserate`, `total_hours`, `SSS`, `PhilHealth`, `Pag-IBIG`, `benefit_name`, `amount`, `date_sent`) VALUES
-(1, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(2, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(3, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(4, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(5, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(6, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(7, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(8, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(9, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(10, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(11, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(12, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(13, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(14, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(15, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(16, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(17, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(18, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(19, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, NULL),
-(20, 1, 'john', 2.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(21, 2, 'steve', 3.00, 0.00, 0.00, 0.00, 0.00, 'Standard Benefit', 0.00, NULL),
-(22, 3, 'Mark', 60.00, 0.00, 500.00, 240.00, 100.00, 'Standard Benefit', 0.00, '2026-03-30 22:10:17');
+INSERT INTO `finance` (`finance_id`, `employee_id`, `name`, `baserate`, `total_hours`, `SSS`, `PhilHealth`, `Pag-IBIG`, `benefit_name`, `amount`, `date_sent`, `status`, `approved_by`, `approved_at`) VALUES
+(47, 3, 'Mark', 60.00, 8.00, 500.00, 240.00, 100.00, 'N/A', 0.00, '2026-03-31 01:46:21', 'approved', 'mike', '2026-03-31 01:46:34'),
+(48, 6, 'john', 150.00, 10.00, 500.00, 600.00, 100.00, 'Standard Benefit', 500.00, '2026-03-31 01:46:21', 'rejected', 'mike', '2026-03-31 01:46:36'),
+(51, 7, 'steve', 200.00, 41.00, 500.00, 800.00, 100.00, 'Standard Benefit', 0.00, '2026-03-31 02:20:30', 'approved', 'mike', '2026-03-31 02:21:51');
 
 -- --------------------------------------------------------
 
@@ -182,10 +183,17 @@ CREATE TABLE `payroll` (
   `approved_by` varchar(20) NOT NULL,
   `approved_at` datetime NOT NULL,
   `generated_at` datetime NOT NULL,
-  `sent_at` datetime NOT NULL,
   `week_start` date NOT NULL,
   `week_end` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `payroll`
+--
+
+INSERT INTO `payroll` (`payroll_id`, `employee_id`, `total_hours`, `overtime_hours`, `gross_salary`, `total_deductions`, `total_benefits`, `net_salary`, `approved_by`, `approved_at`, `generated_at`, `week_start`, `week_end`) VALUES
+(6, 7, 9, 0, 1800, 1400, 0, 400, 'mike', '2026-03-31 01:46:37', '2026-03-31 02:01:30', '2026-03-30', '2026-04-05'),
+(7, 7, 41, 1, 8250, 1400, 0, 6850, 'mike', '2026-03-31 02:21:51', '2026-03-31 02:22:16', '2026-03-30', '2026-04-05');
 
 -- --------------------------------------------------------
 
@@ -226,10 +234,6 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `password`, `datecreated`, `status`, `role`, `username`) VALUES
-(1, 'qwerty1234!', '2026-03-12', 1, 'employee', 'john'),
-(2, 'qwerty1234!', '2026-03-12', 1, 'employee', 'steve'),
-(3, 'qwerty1234!', '2026-03-12', 1, 'employee', 'alice'),
-(4, 'qwerty1234!', '2026-03-12', 1, 'employee', 'geane'),
 (6, 'pass123', '2026-03-29', 1, 'hr', 'jane'),
 (7, 'pass123', '2026-03-29', 1, 'finance', 'mike'),
 (8, 'admin123', '2026-03-29', 1, 'admin', 'admin'),
@@ -238,7 +242,11 @@ INSERT INTO `users` (`user_id`, `password`, `datecreated`, `status`, `role`, `us
 (11, 'pass123', '2026-03-30', 1, 'Employee', 'Marc'),
 (12, 'pass123', '2026-03-30', 1, 'Employee', 'Marc'),
 (13, 'pass123', '2026-03-30', 1, 'Employee', 'bert'),
-(14, 'pass123', '2026-03-30', 1, 'Employee', 'Mark');
+(14, 'pass123', '2026-03-30', 1, 'Employee', 'Mark'),
+(15, 'pass123', '2026-03-30', 1, 'Employee', 'bob'),
+(16, 'pass123', '2026-03-30', 1, 'Employee', 'james'),
+(17, 'pass123', '2026-03-30', 1, 'Employee', 'john'),
+(18, 'pass123', '2026-03-30', 1, 'Employee', 'steve');
 
 --
 -- Indexes for dumped tables
@@ -310,31 +318,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `benefits`
 --
 ALTER TABLE `benefits`
-  MODIFY `benefit_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `benefit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `employee_data`
 --
 ALTER TABLE `employee_data`
-  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `employee_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `employee_deductions`
 --
 ALTER TABLE `employee_deductions`
-  MODIFY `deduction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `deduction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `finance`
 --
 ALTER TABLE `finance`
-  MODIFY `finance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `finance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `government_contribution`
@@ -346,7 +354,7 @@ ALTER TABLE `government_contribution`
 -- AUTO_INCREMENT for table `payroll`
 --
 ALTER TABLE `payroll`
-  MODIFY `payroll_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payroll_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tickets`
@@ -358,7 +366,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables
