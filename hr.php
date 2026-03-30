@@ -43,7 +43,8 @@ session_start();
         <div class="sidebar">
             <a href="index.php" class="active">Dashboard</a>
             <a href="employees_salary_data.php">Employee Salary Data</a>
-            <a href="time_adjustment.php">Time Adjustments</a>
+            <a href="timein.php">Time In For An Employee</a>
+            <a href="timeout.php">Time Out For An Employee</a>
             <a href="ticket_request.php">Request Ticket</a>
             <a href="send_finance.php">Send to Finance</a>
             <a href="logout.php" style="border-top: 1px solid #46637f; margin-top: 20px;">Logout</a>
