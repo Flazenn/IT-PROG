@@ -38,15 +38,23 @@ if (isset($_POST['add'])) {
                      VALUES ('$new_employee_id', '$sss', '$philhealth', '$pagibig')";
 
             if ($con->query($sql3) === TRUE) {
-                echo "User and employee added successfully";
+
+                $benefit_name = 'Standard Benefit';
+                $benefit_amount = ($marital == 'married') ? 500.00 : 0.00;
+
+                $sql4 = "INSERT INTO benefits (employee_id, benefit_name, amount)
+                        VALUES ('$new_employee_id', '$benefit_name', '$benefit_amount')";
+
+                if ($con->query($sql4) === TRUE) {
+                    echo "User and employee added successfully";
+                } else {
+                    echo "Benefits error: " . $con->error;
+                }
+
             } else {
                 echo "Deductions error: " . $con->error;
             }
-
-        } else {
-            echo "Employee insert error: " . $con->error;
         }
-
     }
 }
 ?>
