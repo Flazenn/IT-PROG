@@ -1,22 +1,37 @@
  <?php
-        require "dbconnection.php";
-        mysqli_select_db($con, "apsdb");
+require "dbconnection.php";
+mysqli_select_db($con, "apsdb");
 
 if (isset($_POST['add'])) {
 
     $username = $_POST['username'];
     $password = $_POST['password'];
     $role = $_POST['role'];
+    $baserate = $_POST['baserate'];
+
     $status = 1;
     $datecreated = date("Y-m-d");
 
-    $sql = "INSERT INTO users (password, datecreated, status, role, username)
-            VALUES ('$password', '$datecreated', '$status', '$role', '$username')";
+    
+    $sql1 = "INSERT INTO users (password, datecreated, status, role, username)
+             VALUES ('$password', '$datecreated', '$status', '$role', '$username')";
 
-    if ($con->query($sql) === TRUE) {
-        echo "User added successfully";
-    } else {
-        echo "Error: " . $con->error;
+    $temp = $con->query($sql1);
+    if ($temp == TRUE && $role == "Employee") {
+
+        
+        $user_id = $con->insert_id;
+
+        
+        $sql2 = "INSERT INTO employee_data (user_id, name, baserate, mandatory_deduction, marital_status, date_hired)
+                 VALUES ('$user_id', '$username', '$baserate', '0', 'single', CURDATE())";
+
+        if ($con->query($sql2) === TRUE) {
+            echo "User added successfully";
+        } else {
+            echo "Employee insert error: " . $con->error;
+        }
+
     }
 }
 ?>
@@ -45,6 +60,8 @@ if (isset($_POST['add'])) {
     <option value="Admin" >Admin</option>
 </select>
 <br><br>
+Baserate:<br>
+    <input type="number" name="baserate" required><br><br>
 
 
 
